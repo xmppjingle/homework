@@ -1,0 +1,16 @@
+Duration,TimeOfDay,DurationOfStay,Category
+8,14,2,Work
+6,11,2,Work
+1,8,2,Work
+5,11,2,Work
+10,7,2,Work
+6,11,-2,Home
+9,19,2,Home
+12,19,-2,Home
+20,19,2,Home
+12,18,2,Home
+2,14,-2,Other
+1,14,2,Other
+2,10,2,Other
+1,11,2,Other
+1,15,2,Other
