@@ -53,16 +53,22 @@ class GaussianNaiveBayes(private val distributions: Map<String, List<GaussianDis
     fun predict(features: List<Double>): String {
         var maxLogProb = Double.NEGATIVE_INFINITY
         var maxLabel = ""
+        var logProb = 0.0
         for ((label, labelDistributions) in distributions) {
-            var logProb = ln(1.0 / distributions.size.toDouble())
+            logProb = ln(1.0 / distributions.size.toDouble())
             for (i in labelDistributions.indices) {
                 logProb += ln(labelDistributions[i].probability(features[i]))
             }
-            if (logProb > maxLogProb) {
+            if (logProb >= maxLogProb) {
                 maxLogProb = logProb
                 maxLabel = label
             }
         }
+
+        if(maxLabel.isBlank()){
+            println("Blank: $features")
+        }
+
         return maxLabel
     }
 }
