@@ -36,8 +36,8 @@ class GaussianNaiveBayes(private val distributions: Map<String, List<GaussianDis
         }
 
         fun splitTimeOfDay(timeOfDay: Double): List<Double> {
-            val sin = Math.sin(timeOfDay * (Math.PI / 12)) * 12
-            val cos = Math.cos(timeOfDay * (Math.PI / 12)) * 12
+            val sin = Math.sin(timeOfDay * (Math.PI / 12)) * 120
+            val cos = Math.cos(timeOfDay * (Math.PI / 12)) * 120
             return listOf(sin, cos)
         }
 
