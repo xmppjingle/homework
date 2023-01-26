@@ -112,7 +112,6 @@ class HomeworkScore {
             return matchingHours.toDouble() / totalHours.toDouble()
         }
 
-
     }
 }
 
