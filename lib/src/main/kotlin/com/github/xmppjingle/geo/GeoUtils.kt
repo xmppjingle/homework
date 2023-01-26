@@ -27,6 +27,12 @@ class GeoUtils {
             repeat(decimals) { multiplier *= 10 }
             return kotlin.math.round(this * multiplier) / multiplier
         }
+
+        fun splitTimeOfDay(timeOfDay: Double): List<Double> {
+            val sin = Math.sin(timeOfDay * (Math.PI / 12)) * 120
+            val cos = Math.cos(timeOfDay * (Math.PI / 12)) * 120
+            return listOf(sin, cos)
+        }
     }
 }
 
