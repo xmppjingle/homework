@@ -22,7 +22,7 @@ repositories {
 
 dependencies {
     // Use the Kotlin JUnit 5 integration.
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testImplementation(kotlin("test-junit5"))
 
     // Use the JUnit 5 integration.
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.1")
@@ -36,7 +36,6 @@ dependencies {
     // Smile
     implementation("com.github.haifengl:smile-core:2.6.0")
     implementation("com.github.haifengl:smile-kotlin:2.6.0")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
     implementation("com.github.doyaaaaaken:kotlin-csv-jvm:0.15.1")
 
     // These are needed for regression i Smile.

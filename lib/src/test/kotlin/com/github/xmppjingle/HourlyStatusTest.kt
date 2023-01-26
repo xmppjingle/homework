@@ -72,6 +72,26 @@ class HourlyStatusTest {
 
     }
 
+    @Test
+    fun `simple calculateTotalScoreByPostCode should return correct scores`() {
+        File("src/test/resources/timetables").walk().filter { it.isFile }.forEach {
+
+            val input = FileInputStream(it)
+            val records = ScoreParserUtils.readAndParseFile(input)
+            val timetable = pngToTimetable(ImageIO.read(File("defaultTimetable.png")) as BufferedImage)
+
+            val result = getHomeWorkProfile(calculateTotalScoreByPostCode(records, timetable))
+
+            println("${(result)} - ${it.name}")
+
+            val expected = parseFilename(it.name)
+
+            assertEquals(expected, (result))
+
+        }
+
+    }
+
     private fun parseFilename(filename: String): HomeWorkProfile {
         val parts = filename.split("-")
         val homePostCode = parts[1]
