@@ -71,7 +71,7 @@ class HourlyStatusTest {
         }
 
     }
-
+    
     @Test
     fun `simple calculateTotalScoreByPostCode should return correct scores`() {
         File("src/test/resources/timetables").walk().filter { it.isFile }.forEach {
