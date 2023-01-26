@@ -1,9 +1,19 @@
 package com.github.xmppjingle
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.github.doyaaaaaken.kotlincsv.client.CsvReader
 import com.github.xmppjingle.bayes.GaussianNaiveBayes
+import com.github.xmppjingle.geo.GeoUtils
+import com.github.xmppjingle.geo.Location
+import java.io.*
 import kotlin.test.Test
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import java.text.SimpleDateFormat
+import java.time.DayOfWeek
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.atomic.AtomicInteger
 
 class GaussianNaiveBayesTest {
@@ -67,7 +77,7 @@ class GaussianNaiveBayesTest {
                 val timeOfDay = values[1].toDouble()
                 val splitTimeOfDay = GaussianNaiveBayes.splitTimeOfDay(timeOfDay)
                 val features =
-                    values.subList(0, 1).map { it.toDouble() } + splitTimeOfDay + values.subList(2, values.size - 1)
+                    values.subList(0, 1).map { it.toDouble() } + splitTimeOfDay + values.subList(2, values.size - 2)
                         .map { it.toDouble() }
                 data.add(Pair(features, values[values.size - 1]))
                 line = reader.readLine()
@@ -80,8 +90,8 @@ class GaussianNaiveBayesTest {
         val dataCheck = mutableListOf<Pair<List<Double>, String>>()
         val origData = mutableListOf<List<String>>()
 
-        BufferedReader(InputStreamReader(javaClass.getResourceAsStream("/extract.csv"))).use { reader ->
-            reader.readLine() // skip the header
+        BufferedReader(InputStreamReader(javaClass.getResourceAsStream("/extract_personal.csv"))).use { reader ->
+//            reader.readLine() // skip the header
             var line = reader.readLine()
             while (line != null) {
                 val allValues = line.split(',')
@@ -89,9 +99,9 @@ class GaussianNaiveBayesTest {
                 val timeOfDay = values[1].toDouble()
                 val splitTimeOfDay = GaussianNaiveBayes.splitTimeOfDay(timeOfDay)
                 val features =
-                    values.subList(0, 1).map { it.toDouble() } + splitTimeOfDay + values.subList(2, values.size - 1)
+                    values.subList(0, 1).map { it.toDouble() } + splitTimeOfDay + values.subList(2, values.size - 2)
                         .map { it.toDouble() }
-//                if(allValues[5] == "3ecd496815a87e652b519612d381d548") {
+//                if (allValues[5] == "783e57d91443e1cfec4e857154565237") {
                     dataCheck.add(Pair(features, values[values.size - 1]))
                     origData.add(allValues)
 //                }
@@ -122,17 +132,17 @@ class GaussianNaiveBayesTest {
             incrementD(dTree, origData[i][5], origData[i][4], prediction)
             incrementU(uTree, origData[i][5], origData[i][4], prediction)
             if (prediction == it.second) correctCount++
-//            println("Prediction(${"${origData[i][0].toDouble() / 60}, ${origData[i][1].toDouble()}, ${origData[i][2]}"}): $prediction/${it.second}")
+            println("Prediction(${"${origData[i][0].toDouble() / 60}, ${origData[i][1].toDouble()}, ${origData[i][2]}"}): $prediction/${it.second}")
         }
         println("$correctCount out of ${dataCheck.size} - ${(correctCount.toFloat() / dataCheck.size) * 100}% Accuracy")
 
         println("Location User Group")
-        dTree.forEach{
+        dTree.forEach {
 //            println(it)
         }
 
         println("User Grouped")
-        uTree.forEach{
+        uTree.forEach {
             println("${it.key} -> ${it.value.values}")
         }
     }
@@ -163,8 +173,7 @@ class GaussianNaiveBayesTest {
         val k = "${rLocation}_$prediction"
         t[user]?.let { userGroup ->
             userGroup[k]?.incrementAndGet()
-                ?:
-                userGroup.put(k, AtomicInteger(1))
+                ?: userGroup.put(k, AtomicInteger(1))
             prediction
         }
             ?: t.put(user, mutableMapOf(k to AtomicInteger(1)))
@@ -217,6 +226,42 @@ class GaussianNaiveBayesTest {
         println("$correctCount out of ${data.size} - ${(correctCount.toFloat() / data.size) * 100}% Accuracy")
 
     }
+
+    /* Example of input:
+    "@timestamp",purpose,startTime,endTime,userId,"beginCity.location"
+"Jan 2, 2023 @ 22:13:27.638",eat,"Jan 2, 2023 @ 19:45:47.000","Jan 2, 2023 @ 21:55:14.000","bb3e4b20-25f7-4688-b690-78c80a6059cb","{
+  ""coordinates"": [
+    4.4938780384615375,
+    52.16942593846154
+  ],
+  ""type"": ""Point""
+}"
+"Jan 2, 2023 @ 19:56:38.420",home,"Jan 1, 2023 @ 19:22:04.000","Jan 2, 2023 @ 19:36:26.000","bb3e4b20-25f7-4688-b690-78c80a6059cb","{
+  ""coordinates"": [
+    4.500238588235295,
+    52.17435721764705
+  ],
+  ""type"": ""Point""
+}"
+     */
+
+    @Test
+    fun checkConvertionOfGeneralCSVtoNormalizedTrainingDataCSV() {
+
+        javaClass.getResourceAsStream("/general_test1.csv").let { reader ->
+            val parsed = GeneralDataParser.parseInputData(reader)
+
+            val file = File("extract_personal.csv")
+            val writer = BufferedWriter(file.writer())
+            writer.write(parsed)
+
+            writer.close()
+
+        }
+
+    }
+
+
 
 }
 

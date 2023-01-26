@@ -33,4 +33,6 @@ class GeoUtils {
 data class Location(
     val lon: Double?,
     val lat: Double?
-)
+){
+
+}
