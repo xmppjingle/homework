@@ -1,20 +1,9 @@
 package com.github.xmppjingle
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import com.github.doyaaaaaken.kotlincsv.client.CsvReader
 import com.github.xmppjingle.bayes.GaussianNaiveBayes
-import com.github.xmppjingle.geo.GeoUtils
-import com.github.xmppjingle.geo.Location
-import java.io.*
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import kotlin.test.Test
-import java.text.SimpleDateFormat
-import java.time.DayOfWeek
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
-import java.util.concurrent.atomic.AtomicInteger
 
 class GaussianNaiveBayesTest {
 
