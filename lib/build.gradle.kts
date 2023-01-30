@@ -44,13 +44,6 @@ dependencies {
     implementation("com.github.haifengl:smile-kotlin:2.6.0")
     implementation("com.github.doyaaaaaken:kotlin-csv-jvm:0.15.1")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
-//    implementation("org.apache.arrow:arrow-memory:0.16.0")
-//    implementation("org.apache.arrow:arrow-vector:0.16.0")
-
-    // These are needed for regression i Smile.
-    implementation(group="org.bytedeco", name="javacpp", version="1.5.3", classifier="macosx-x86_64")
-    implementation(group="org.bytedeco", name="openblas", version="0.3.9-1.5.3", classifier="macosx-x86_64")
-    implementation(group="org.bytedeco", name="arpack-ng", version="3.7.0-1.5.3", classifier="macosx-x86_64")
 }
 
 tasks.named<Test>("test") {
