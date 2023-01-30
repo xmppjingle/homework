@@ -12,10 +12,11 @@ plugins {
 
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
+    `maven-publish`
 }
 
 group = "com.github.xmppjingle"
-version = "0.0.1"
+version = "0.0.2"
 java.sourceCompatibility = JavaVersion.VERSION_1_9
 
 repositories {
@@ -56,6 +57,17 @@ dependencies {
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.github.xmppjingle"
+            artifactId = "homework"
+            version = "0.0.2"
+            from(components["java"])
+        }
+    }
 }
 
 tasks {
