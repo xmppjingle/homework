@@ -14,6 +14,10 @@ plugins {
     `java-library`
 }
 
+group = "com.github.xmppjingle"
+version = "0.0.1"
+java.sourceCompatibility = JavaVersion.VERSION_1_9
+
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
@@ -52,4 +56,25 @@ dependencies {
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+tasks {
+
+    val sourcesJar by creating(Jar::class) {
+        archiveClassifier.set("sources")
+        from(sourceSets.main.get().allSource)
+    }
+
+    val javadocJar by creating(Jar::class) {
+        dependsOn.add(javadoc)
+        archiveClassifier.set("javadoc")
+        from(javadoc)
+    }
+
+    artifacts {
+        archives(sourcesJar)
+        archives(javadocJar)
+        archives(jar)
+    }
+
 }
