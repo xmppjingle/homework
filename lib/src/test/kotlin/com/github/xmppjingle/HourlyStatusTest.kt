@@ -1,7 +1,7 @@
 package com.github.xmppjingle
 
+import com.github.xmppjingle.geo.GeoUtils
 import com.github.xmppjingle.statistical.HomeWorkProfile
-import com.github.xmppjingle.statistical.HomeworkScore
 import com.github.xmppjingle.statistical.HomeworkScore.Companion.calculateBonus
 import com.github.xmppjingle.statistical.HomeworkScore.Companion.calculateScores
 import com.github.xmppjingle.statistical.HomeworkScore.Companion.calculateTotalScoreByPostCode
@@ -10,7 +10,6 @@ import com.github.xmppjingle.statistical.HomeworkScore.Companion.getHomeWorkProf
 import com.github.xmppjingle.statistical.HourlyStatus
 import com.github.xmppjingle.statistical.ScoreParserUtils
 import com.github.xmppjingle.statistical.ScoreParserUtils.Companion.createPNGFromTimetable
-import com.github.xmppjingle.statistical.ScoreParserUtils.Companion.hashAndWriteToCsv
 import com.github.xmppjingle.statistical.ScoreParserUtils.Companion.pngToTimetable
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -71,7 +70,17 @@ class HourlyStatusTest {
         }
 
     }
-    
+
+    @Test
+    fun `simple city name test`() {
+        val m = GeoUtils.createNormalizedCityNameMap(File("src/main/resources/geonames-worldwide.csv"))
+
+        assertEquals("The Hague".lowercase(), m["den haag"])
+        assertEquals("Uberlandia".lowercase(), m["uberlândia"])
+        assertEquals("Uberlandia".lowercase(), m["uberlandija"])
+
+    }
+
     @Test
     fun `simple calculateTotalScoreByPostCode should return correct scores`() {
         File("src/test/resources/timetables").walk().filter { it.isFile }.forEach {

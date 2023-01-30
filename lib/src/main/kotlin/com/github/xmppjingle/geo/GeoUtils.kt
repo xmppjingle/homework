@@ -1,5 +1,8 @@
 package com.github.xmppjingle.geo
 
+import com.github.doyaaaaaken.kotlincsv.client.CsvReader
+import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
+import java.io.File
 import kotlin.math.cos
 import kotlin.math.roundToInt
 
@@ -15,7 +18,8 @@ class GeoUtils {
                         val degreesLonGrid = degrees / cos
                         Location(
                             (lon / degreesLonGrid).roundToInt() * degreesLonGrid,
-                            roundLat)
+                            roundLat
+                        )
                     } else {
                         Location(lon.round(5), lat)
                     }
@@ -33,12 +37,29 @@ class GeoUtils {
             val cos = Math.cos(timeOfDay * (Math.PI / 12)) * 120
             return listOf(sin, cos)
         }
+
+        fun createNormalizedCityNameMap(file: File): HashMap<String, String> {
+            val cityNameMap = HashMap<String, String>()
+
+            val reader = csvReader { delimiter = ';' }
+            reader.readAllWithHeader(file).forEach { row ->
+                val alternateNames = row["Alternate Names"]?.lowercase()?.trim()
+                val asciiName = row["ASCII Name"]?.lowercase()?.trim()
+                // Add all alternate names as keys and asciiName as value in the map
+                alternateNames?.split(",")?.forEach {
+                    val normal = it.trim().lowercase()
+                    cityNameMap[normal] = asciiName ?: "UNKNOWN"
+                }
+            }
+            return cityNameMap
+        }
+
     }
 }
 
 data class Location(
     val lon: Double?,
     val lat: Double?
-){
+) {
 
 }

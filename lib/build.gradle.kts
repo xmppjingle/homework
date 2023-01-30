@@ -14,10 +14,16 @@ plugins {
     `java-library`
 }
 
+group = "com.github.xmppjingle"
+version = "0.0.1"
+java.sourceCompatibility = JavaVersion.VERSION_1_9
+
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
     maven { url = uri("https://jitpack.io") }
+    maven { url = uri("https://dl.bintray.com/apache/arrow") }
+
 }
 
 dependencies {
@@ -37,6 +43,9 @@ dependencies {
     implementation("com.github.haifengl:smile-core:2.6.0")
     implementation("com.github.haifengl:smile-kotlin:2.6.0")
     implementation("com.github.doyaaaaaken:kotlin-csv-jvm:0.15.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
+//    implementation("org.apache.arrow:arrow-memory:0.16.0")
+//    implementation("org.apache.arrow:arrow-vector:0.16.0")
 
     // These are needed for regression i Smile.
     implementation(group="org.bytedeco", name="javacpp", version="1.5.3", classifier="macosx-x86_64")
@@ -47,4 +56,25 @@ dependencies {
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+tasks {
+
+    val sourcesJar by creating(Jar::class) {
+        archiveClassifier.set("sources")
+        from(sourceSets.main.get().allSource)
+    }
+
+    val javadocJar by creating(Jar::class) {
+        dependsOn.add(javadoc)
+        archiveClassifier.set("javadoc")
+        from(javadoc)
+    }
+
+    artifacts {
+        archives(sourcesJar)
+        archives(javadocJar)
+        archives(jar)
+    }
+
 }

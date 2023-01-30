@@ -9,7 +9,7 @@ To use the library, add the following to your Gradle or Maven dependencies:
 
 ```
 dependencies {
-implementation 'com.github.xmppjingle:homework:1.0.0'
+implementation 'com.github.xmppjingle:homework:0.0.1'
 }
 ```
 
