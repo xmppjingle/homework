@@ -3,6 +3,7 @@ package com.github.xmppjingle.geo
 import com.github.doyaaaaaken.kotlincsv.client.CsvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import java.io.File
+import java.io.InputStream
 import kotlin.math.cos
 import kotlin.math.roundToInt
 
@@ -38,11 +39,14 @@ class GeoUtils {
             return listOf(sin, cos)
         }
 
-        fun createNormalizedCityNameMap(file: File): HashMap<String, String> {
+        fun createNormalizedCityNameMap(file: File): HashMap<String, String> =
+            createNormalizedCityNameMap(file.inputStream())
+
+        fun createNormalizedCityNameMap(inputStream: InputStream): HashMap<String, String> {
             val cityNameMap = HashMap<String, String>()
 
             val reader = csvReader { delimiter = ';' }
-            reader.readAllWithHeader(file).forEach { row ->
+            reader.readAllWithHeader(inputStream).forEach { row ->
                 val alternateNames = row["Alternate Names"]?.lowercase()?.trim()
                 val asciiName = row["ASCII Name"]?.lowercase()?.trim()
                 // Add all alternate names as keys and asciiName as value in the map
