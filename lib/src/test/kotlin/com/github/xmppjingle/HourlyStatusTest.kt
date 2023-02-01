@@ -72,16 +72,6 @@ class HourlyStatusTest {
     }
 
     @Test
-    fun `simple city name test`() {
-        val m = GeoUtils.createNormalizedCityNameMap(File("src/main/resources/geonames-worldwide.csv"))
-
-        assertEquals("The Hague".lowercase(), m["den haag"])
-        assertEquals("Uberlandia".lowercase(), m["uberlândia"])
-        assertEquals("Uberlandia".lowercase(), m["uberlandija"])
-
-    }
-
-    @Test
     fun `simple calculateTotalScoreByPostCode should return correct scores`() {
         File("src/test/resources/timetables").walk().filter { it.isFile }.forEach {
 

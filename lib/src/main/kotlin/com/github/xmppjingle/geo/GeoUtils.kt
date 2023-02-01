@@ -1,6 +1,5 @@
 package com.github.xmppjingle.geo
 
-import com.github.doyaaaaaken.kotlincsv.client.CsvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import java.io.File
 import java.io.InputStream
@@ -39,23 +38,38 @@ class GeoUtils {
             return listOf(sin, cos)
         }
 
-        fun createNormalizedCityNameMap(file: File): HashMap<String, String> =
-            createNormalizedCityNameMap(file.inputStream())
+    }
+}
 
-        fun createNormalizedCityNameMap(inputStream: InputStream): HashMap<String, String> {
-            val cityNameMap = HashMap<String, String>()
+data class CityNames(
+    val map:HashMap<String, HashMap<String, String>>
+){
+    fun getCityName(countryCode: String, cityName: String): String =
+        map[countryCode.trim().uppercase()]?.get(cityName.trim().lowercase()) ?: cityName
+    companion object{
+        fun createNormalizedCityNames(file: File): CityNames =
+            createNormalizedCityNames(file.inputStream())
+
+        fun createNormalizedCityNames(inputStream: InputStream): CityNames {
+            val cityNameMap = HashMap<String, HashMap<String, String>>()
 
             val reader = csvReader { delimiter = ';' }
             reader.readAllWithHeader(inputStream).forEach { row ->
                 val alternateNames = row["Alternate Names"]?.lowercase()?.trim()
                 val asciiName = row["ASCII Name"]?.lowercase()?.trim()
+                val countryCode = row["Country Code"]?.uppercase()?.trim() ?: "__"
                 // Add all alternate names as keys and asciiName as value in the map
                 alternateNames?.split(",")?.forEach {
                     val normal = it.trim().lowercase()
-                    cityNameMap[normal] = asciiName ?: "UNKNOWN"
+                    val ascii = asciiName ?: "UNKNOWN"
+                    if (cityNameMap[countryCode] == null) {
+                        cityNameMap[countryCode] = hashMapOf(normal to ascii)
+                    } else {
+                        cityNameMap[countryCode]?.let { cc -> cc[normal] = ascii }
+                    }
                 }
             }
-            return cityNameMap
+            return CityNames(cityNameMap)
         }
 
     }
