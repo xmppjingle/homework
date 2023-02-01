@@ -42,11 +42,12 @@ class GeoUtils {
 }
 
 data class CityNames(
-    val map:HashMap<String, HashMap<String, String>>
-){
+    val map: HashMap<String, HashMap<String, String>>
+) {
     fun getCityName(countryCode: String, cityName: String): String =
         map[countryCode.trim().uppercase()]?.get(cityName.trim().lowercase()) ?: cityName
-    companion object{
+
+    companion object {
         fun createNormalizedCityNames(file: File): CityNames =
             createNormalizedCityNames(file.inputStream())
 
@@ -55,19 +56,20 @@ data class CityNames(
 
             val reader = csvReader { delimiter = ';' }
             reader.readAllWithHeader(inputStream).forEach { row ->
+                val name = row["Name"]?.lowercase()?.trim()
                 val alternateNames = row["Alternate Names"]?.lowercase()?.trim()
-                val asciiName = row["ASCII Name"]?.lowercase()?.trim()
+                val asciiName = row["ASCII Name"]?.lowercase()?.trim() ?: "UNKNOWN"
                 val countryCode = row["Country Code"]?.uppercase()?.trim() ?: "__"
                 // Add all alternate names as keys and asciiName as value in the map
                 alternateNames?.split(",")?.forEach {
                     val normal = it.trim().lowercase()
-                    val ascii = asciiName ?: "UNKNOWN"
                     if (cityNameMap[countryCode] == null) {
-                        cityNameMap[countryCode] = hashMapOf(normal to ascii)
+                        cityNameMap[countryCode] = hashMapOf(normal to asciiName)
                     } else {
-                        cityNameMap[countryCode]?.let { cc -> cc[normal] = ascii }
+                        cityNameMap[countryCode]?.let { cc -> cc[normal] = asciiName }
                     }
                 }
+                cityNameMap[countryCode]?.let { cc -> name?.let { cc[name] = asciiName } }
             }
             return CityNames(cityNameMap)
         }
