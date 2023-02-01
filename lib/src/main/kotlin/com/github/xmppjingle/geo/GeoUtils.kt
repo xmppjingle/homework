@@ -44,8 +44,8 @@ class GeoUtils {
 data class CityNames(
     val map: HashMap<String, HashMap<String, String>>
 ) {
-    fun getCityName(countryCode: String, cityName: String): String =
-        map[countryCode.trim().uppercase()]?.get(cityName.trim().lowercase()) ?: cityName
+    fun getCityName(countryCode: String, cityName: String): String? =
+        map[countryCode.trim().uppercase()]?.get(cityName.trim().lowercase())
 
     companion object {
         fun createNormalizedCityNames(file: File): CityNames =

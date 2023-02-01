@@ -16,7 +16,7 @@ plugins {
 }
 
 group = "com.github.xmppjingle"
-version = "0.0.6"
+version = "0.0.7"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
@@ -57,7 +57,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "com.github.xmppjingle"
             artifactId = "homework"
-            version = "0.0.6"
+            version = "0.0.7"
             from(components["java"])
         }
     }
