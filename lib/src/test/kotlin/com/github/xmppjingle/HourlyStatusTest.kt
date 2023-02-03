@@ -11,6 +11,7 @@ import com.github.xmppjingle.statistical.HourlyStatus
 import com.github.xmppjingle.statistical.ScoreParserUtils
 import com.github.xmppjingle.statistical.ScoreParserUtils.Companion.createPNGFromTimetable
 import com.github.xmppjingle.statistical.ScoreParserUtils.Companion.pngToTimetable
+import com.github.xmppjingle.statistical.Timetable
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.awt.image.BufferedImage
@@ -106,7 +107,7 @@ class HourlyStatusTest {
         println(compareTimetables(defaultTimetable, t))
     }
 
-    val defaultTimetable: Map<DayOfWeek, List<HourlyStatus>> = mapOf(DayOfWeek.MONDAY to List(24) { i ->
+    val defaultTimetable: Timetable = Timetable(mapOf(DayOfWeek.MONDAY to List(24) { i ->
         when (i) {
             in 8..18 -> HourlyStatus.WORK
             in 20..23, in 0..6 -> HourlyStatus.HOME
@@ -150,6 +151,6 @@ class HourlyStatusTest {
             in 20..23, in 0..6 -> HourlyStatus.HOME
             else -> HourlyStatus.OTHER
         }
-    })
+    }))
 
 }

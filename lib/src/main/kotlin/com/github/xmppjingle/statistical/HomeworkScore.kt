@@ -16,7 +16,7 @@ class HomeworkScore {
     companion object {
 
         fun calculateBonus(scores: Map<HourlyStatus, Int>): Map<HourlyStatus, Int> {
-            val maxScore = scores.values.max()
+            val maxScore = scores.values.maxOrNull()
 
             return scores.mapValues { (_, value) ->
                 if (value == maxScore) {
@@ -29,7 +29,7 @@ class HomeworkScore {
         }
 
         fun calculateScores(
-            start: LocalDateTime, end: LocalDateTime, timetable: Map<DayOfWeek, List<HourlyStatus>>
+            start: LocalDateTime, end: LocalDateTime, timetable: Timetable
         ): Map<HourlyStatus, Int> {
             val scores = mutableMapOf(
                 HourlyStatus.WORK to 0, HourlyStatus.HOME to 0, HourlyStatus.OTHER to 0
@@ -39,7 +39,7 @@ class HomeworkScore {
             while (current < end) {
                 val dayOfWeek = current.dayOfWeek
                 val hour = current.hour
-                val status = timetable[dayOfWeek]?.get(hour) ?: HourlyStatus.OTHER
+                val status = timetable.week[dayOfWeek]?.get(hour) ?: HourlyStatus.OTHER
                 scores[status] = scores.getValue(status) + 1
                 current = current.plusHours(1)
             }
@@ -47,7 +47,7 @@ class HomeworkScore {
         }
 
         fun calculateTotalScoreByPostCode(
-            records: List<Record>, timetable: Map<DayOfWeek, List<HourlyStatus>>
+            records: List<Record>, timetable:Timetable
         ): Map<String, Map<HourlyStatus, Int>> {
             val postCodeScores = mutableMapOf<String, MutableMap<HourlyStatus, Int>>()
 
@@ -92,14 +92,14 @@ class HomeworkScore {
         }
 
         fun compareTimetables(
-            timetable1: Map<DayOfWeek, List<HourlyStatus>>, timetable2: Map<DayOfWeek, List<HourlyStatus>>
+            timetable1: Timetable, timetable2: Timetable
         ): Double {
             var matchingHours = 0
             var totalHours = 0
 
             for (day in DayOfWeek.values()) {
-                val hours1 = timetable1[day] ?: emptyList()
-                val hours2 = timetable2[day] ?: emptyList()
+                val hours1 = timetable1.week[day] ?: emptyList()
+                val hours2 = timetable2.week[day] ?: emptyList()
 
                 for (i in 0 until maxOf(hours1.size, hours2.size)) {
                     if (i < hours1.size && i < hours2.size && hours1[i] == hours2[i]) {
@@ -118,6 +118,8 @@ class HomeworkScore {
 enum class HourlyStatus {
     WORK, HOME, OTHER
 }
+
+data class Timetable(val week: Map<DayOfWeek, List<HourlyStatus>>)
 
 data class HomeWorkProfile(val homePostCode: String, val workPostCode: String, val workFromHome: Boolean)
 
@@ -164,14 +166,14 @@ class ScoreParserUtils {
         }
 
         fun createPNGFromTimetable(
-            timetable: Map<DayOfWeek, List<HourlyStatus>>, filename: String, width: Int = 24, height: Int = 7
+            timetable: Timetable, filename: String, width: Int = 24, height: Int = 7
         ) {
             val image = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
             val graphics = image.createGraphics()
 
             for (y in 0 until height) {
                 val day = DayOfWeek.values()[y % 7]
-                val hourStatuses = timetable[day]!!
+                val hourStatuses = timetable.week[day]!!
 
                 for (x in 0 until width) {
                     val hour = x % 24
@@ -190,7 +192,7 @@ class ScoreParserUtils {
             ImageIO.write(image, "png", File(filename))
         }
 
-        fun pngToTimetable(image: BufferedImage): Map<DayOfWeek, List<HourlyStatus>> {
+        fun pngToTimetable(image: BufferedImage): Timetable {
             val timetable = mutableMapOf<DayOfWeek, List<HourlyStatus>>()
             val days = DayOfWeek.values()
             //val width = image.width
@@ -215,7 +217,7 @@ class ScoreParserUtils {
                 }
                 timetable[day] = hourlyStatusList
             }
-            return timetable
+            return Timetable(timetable)
         }
 
         fun hashAndWriteToCsv(
@@ -250,14 +252,6 @@ class ScoreParserUtils {
                 outputFile.writeText("${inputReader.readLine()}\n")
             }
         }
-
-//        fun hashValue(value: Any?, secret: String): String {
-//            val secretKey = SecretKeySpec(secret.toByteArray(StandardCharsets.UTF_8), "HmacMD5")
-//            val mac = Mac.getInstance("HmacMD5")
-//            mac.init(secretKey)
-//            val hashedBytes = mac.doFinal(value.toString().toByteArray(StandardCharsets.UTF_8))
-//            return Base64.getEncoder().encodeToString(hashedBytes).substring(8)
-//        }
 
         fun hashValue(data: String, secret: String): String {
             val md = MessageDigest.getInstance("MD5")
