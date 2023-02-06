@@ -15,6 +15,11 @@ import javax.imageio.ImageIO
 class HomeworkScore {
     companion object {
 
+        val defaultTimetable =
+            Thread.currentThread().contextClassLoader.getResource("defaultTimetable.png")?.openStream()?.let {
+                ScoreParserUtils.pngToTimetable(ImageIO.read(it) as BufferedImage)
+            }
+
         fun calculateBonus(scores: Map<HourlyStatus, Int>): Map<HourlyStatus, Int> {
             val maxScore = scores.values.maxOrNull()
 
@@ -29,7 +34,7 @@ class HomeworkScore {
         }
 
         fun calculateScores(
-            start: LocalDateTime, end: LocalDateTime, timetable: Timetable
+            start: LocalDateTime, end: LocalDateTime, timetable: Timetable = defaultTimetable!!
         ): Map<HourlyStatus, Int> {
             val scores = mutableMapOf(
                 HourlyStatus.WORK to 0, HourlyStatus.HOME to 0, HourlyStatus.OTHER to 0
@@ -47,7 +52,7 @@ class HomeworkScore {
         }
 
         fun calculateTotalScoreByPostCode(
-            records: List<Record>, timetable:Timetable
+            records: List<Record>, timetable: Timetable
         ): Map<String, Map<HourlyStatus, Int>> {
             val postCodeScores = mutableMapOf<String, MutableMap<HourlyStatus, Int>>()
 
