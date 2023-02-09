@@ -1,6 +1,5 @@
 package com.github.xmppjingle
 
-import com.github.xmppjingle.geo.GeoUtils
 import com.github.xmppjingle.statistical.HomeWorkProfile
 import com.github.xmppjingle.statistical.HomeworkScore.Companion.calculateBonus
 import com.github.xmppjingle.statistical.HomeworkScore.Companion.calculateScores
@@ -9,7 +8,9 @@ import com.github.xmppjingle.statistical.HomeworkScore.Companion.compareTimetabl
 import com.github.xmppjingle.statistical.HomeworkScore.Companion.getHomeWorkProfile
 import com.github.xmppjingle.statistical.HourlyStatus
 import com.github.xmppjingle.statistical.ScoreParserUtils
+import com.github.xmppjingle.statistical.ScoreParserUtils.Companion.alphabet
 import com.github.xmppjingle.statistical.ScoreParserUtils.Companion.createPNGFromTimetable
+import com.github.xmppjingle.statistical.ScoreParserUtils.Companion.levenshteinDistance
 import com.github.xmppjingle.statistical.ScoreParserUtils.Companion.pngToTimetable
 import com.github.xmppjingle.statistical.Timetable
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -90,6 +91,15 @@ class HourlyStatusTest {
 
         }
 
+    }
+
+    @Test
+    fun testLevenshteinDistance() {
+        val alphabet = alphabet()
+        assertEquals(2, levenshteinDistance("thiago", "thjago", alphabet))
+        assertEquals(2, levenshteinDistance("2592GJ", "2592GK", alphabet))
+        assertEquals(1, levenshteinDistance("2592GJ", "2592G", alphabet))
+        assertEquals(2, levenshteinDistance("8010", "8008", alphabet))
     }
 
     private fun parseFilename(filename: String): HomeWorkProfile {
