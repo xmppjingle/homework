@@ -57,7 +57,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "com.github.xmppjingle"
             artifactId = "homework"
-            version = "0.0.8"
+            version = "0.0.9"
             from(components["java"])
         }
     }
