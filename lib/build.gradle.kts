@@ -71,7 +71,7 @@ tasks {
     }
 
     val javadocJar by creating(Jar::class) {
-        dependsOn.add(javadoc) s
+        dependsOn.add(javadoc)
         archiveClassifier.set("javadoc")
         from(javadoc)
     }
