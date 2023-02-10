@@ -16,7 +16,7 @@ plugins {
 }
 
 group = "com.github.xmppjingle"
-version = "0.0.9"
+version = "0.0.10"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
@@ -57,7 +57,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "com.github.xmppjingle"
             artifactId = "homework"
-            version = "0.0.9"
+            version = "0.0.10"
             from(components["java"])
         }
     }
@@ -71,7 +71,7 @@ tasks {
     }
 
     val javadocJar by creating(Jar::class) {
-        dependsOn.add(javadoc)
+        dependsOn.add(javadoc) s
         archiveClassifier.set("javadoc")
         from(javadoc)
     }

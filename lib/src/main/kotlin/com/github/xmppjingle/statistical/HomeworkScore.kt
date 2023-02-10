@@ -278,29 +278,40 @@ class ScoreParserUtils {
             return alphabet
         }
 
-        fun levenshteinDistance(s1: String, s2: String, alphabet: Map<Char, Int>): Int {
+        fun levenshteinDistance(s1: String, s2: String, alphabet: Map<Char, Int>, editCost: Int = 1, digitCost: Int = 1, distanceCost: Int = 1): Int {
             val m = s1.length
             val n = s2.length
             val dp = Array(m + 1) { IntArray(n + 1) }
 
-            // Initialize the dp array
             for (i in 0..m) {
-                dp[i][0] = i
-            }
-            for (j in 0..n) {
-                dp[0][j] = j
+                dp[i][0] = i * editCost
             }
 
-            // Fill in the dp array
+            for (j in 0..n) {
+                dp[0][j] = j * editCost
+            }
+
             for (i in 1..m) {
                 for (j in 1..n) {
-                    val cost = if (s1[i - 1] == s2[j - 1]) 0 else alphabet[s1[i - 1]]!! + alphabet[s2[j - 1]]!!
-                    dp[i][j] = minOf(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost)
+                    val cost = if (s1[i - 1] == s2[j - 1]) {
+                        0
+                    } else if (s1[i - 1].isDigit() && s2[j - 1].isDigit()) {
+                        digitCost + (distanceCost * Math.abs(i - j))
+                    } else {
+                        alphabet[s2[j - 1]]!! + (distanceCost * Math.abs(i - j))
+                    }
+                    dp[i][j] = minOf(
+                        dp[i - 1][j] + editCost,
+                        dp[i][j - 1] + editCost,
+                        dp[i - 1][j - 1] + cost
+                    )
                 }
             }
 
             return dp[m][n]
         }
+
+
 
     }
 

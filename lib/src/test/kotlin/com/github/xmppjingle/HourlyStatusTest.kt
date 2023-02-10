@@ -96,10 +96,11 @@ class HourlyStatusTest {
     @Test
     fun testLevenshteinDistance() {
         val alphabet = alphabet()
-        assertEquals(2, levenshteinDistance("thiago", "thjago", alphabet))
-        assertEquals(2, levenshteinDistance("2592GJ", "2592GK", alphabet))
-        assertEquals(1, levenshteinDistance("2592GJ", "2592G", alphabet))
-        assertEquals(2, levenshteinDistance("8010", "8008", alphabet))
+        assertEquals(2, levenshteinDistance("thiago", "thjago", alphabet, 1, 1, 1))
+        assertEquals(2, levenshteinDistance("2592GK", "2592GL", alphabet, 1,1, 1 ))
+        assertEquals(1, levenshteinDistance("2592GJ", "2592G", alphabet, 1, 1, 1))
+        assertEquals(2, levenshteinDistance("8012", "8008", alphabet, 1, 1, 1))
+        assertEquals(1, levenshteinDistance("8008", "8009", alphabet, 1, 1, 1))
     }
 
     private fun parseFilename(filename: String): HomeWorkProfile {
