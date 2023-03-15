@@ -35,6 +35,15 @@ class HourlyStatusTest {
     }
 
     @Test
+    fun `calculateScores should return correct scores different day`() {
+        val start = LocalDateTime.of(2023, Month.JANUARY, 2, 18, 0)
+        val end = LocalDateTime.of(2023, Month.JANUARY, 5, 10, 0)
+        val expected = mapOf(HourlyStatus.WORK to 10, HourlyStatus.HOME to 0, HourlyStatus.OTHER to 0)
+        val actual = calculateScores(start, end, defaultTimetable)
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun `calculateBonus should return correct scores`() {
         val scores = mapOf(HourlyStatus.WORK to 10, HourlyStatus.HOME to 0, HourlyStatus.OTHER to 0)
         val expected = mapOf(HourlyStatus.WORK to 13, HourlyStatus.HOME to 0, HourlyStatus.OTHER to 0)
@@ -101,6 +110,11 @@ class HourlyStatusTest {
         assertEquals(1, levenshteinDistance("2592GJ", "2592G", alphabet, 1, 1, 1))
         assertEquals(2, levenshteinDistance("8012", "8008", alphabet, 1, 1, 1))
         assertEquals(1, levenshteinDistance("8008", "8009", alphabet, 1, 1, 1))
+        assertEquals(2, levenshteinDistance("8008", "8009X", alphabet, 1, 1, 1))
+        assertEquals(2, levenshteinDistance("8008X", "8009", alphabet, 1, 1, 1))
+        assertEquals(5, levenshteinDistance("8008X", "", alphabet, 1, 1, 1))
+        assertEquals(0, levenshteinDistance("", "", alphabet, 1, 1, 1))
+        assertEquals(0, levenshteinDistance("-", "!", alphabet, 1, 1, 1))
     }
 
     private fun parseFilename(filename: String): HomeWorkProfile {

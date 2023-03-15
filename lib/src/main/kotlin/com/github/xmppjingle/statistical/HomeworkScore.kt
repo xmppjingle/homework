@@ -298,7 +298,7 @@ class ScoreParserUtils {
                     } else if (s1[i - 1].isDigit() && s2[j - 1].isDigit()) {
                         digitCost + (distanceCost * Math.abs(i - j))
                     } else {
-                        alphabet[s2[j - 1]]!! + (distanceCost * Math.abs(i - j))
+                        alphabet[s2[j - 1]]?.let { it + (distanceCost * Math.abs(i - j)) } ?: 0
                     }
                     dp[i][j] = minOf(
                         dp[i - 1][j] + editCost,

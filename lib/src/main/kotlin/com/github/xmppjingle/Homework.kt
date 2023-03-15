@@ -4,7 +4,5 @@
 package com.github.xmppjingle
 
 class Homework {
-    fun someLibraryMethod(): Boolean {
-        return true
-    }
+
 }
